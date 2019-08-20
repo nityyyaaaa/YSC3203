@@ -205,7 +205,7 @@ let _ = assert (Indexing_lists.test_index_list_left_to_right_int
 let rec index_list_left_to_right_rec_on_list
           (xs : 'a list) (index : int) : 'a option =
   match xs with
-  | []      ->
+  | []       ->
      None
   | x :: xs' ->
      if index = 0
@@ -344,30 +344,24 @@ let index_list_right_to_left_rec_on_list
   let rec helper xs = 
     match xs with
     | []       ->
-       ([], Some 0)
+       (None, 0)
     | x :: xs' ->
-       let ((rvs, count) as return_pair) = helper xs'
-       in match count with
-          | Some c ->
-             if c = index
-             then (x :: rvs, None)
-             else (x :: rvs, Some (c + 1))
-          | None   -> return_pair
+       let ((opt_rv, count) as return_pair) = helper xs'
+       in match opt_rv with
+          | Some _ ->
+             return_pair
+          | None   ->
+             if count = index
+             then (Some x, count + 1)
+             else (None, count + 1)
   in
-  let (xs_reduced, opt_count) = helper xs_init
-  in match opt_count with
-     | Some _ -> None
-     | None   -> 
-        match xs_reduced with
-        | []       -> None 
-        | x :: xs' -> Some x
+  let (opt_rv, _) = helper xs_init
+  in opt_rv
 ;;
 
 let _ = assert (Indexing_lists.test_index_list_right_to_left_int
                   index_list_right_to_left_rec_on_list)
 ;;
-
-index_list_right_to_left_rec_on_list [0;1;2;3;4] (-1);;
        
 (* the most obvious solution: flip the expected index using List.length *) 
 let index_list_right_to_left_rec_on_list_alt
