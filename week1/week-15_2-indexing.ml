@@ -243,7 +243,7 @@ let _ = assert (Indexing_lists.test_index_list_left_to_right_int
 let rec index_list_left_to_right_foldl_on_list
           (xs : 'a list) (index : int) : 'a option =
   let (opt_val, _) = 
-    fold_left_list' (None, 0)
+    fold_left_list (None, 0)
                    (fun x ((opt_val, count) as acc) ->
                      match opt_val with
                      | Some _ -> acc
